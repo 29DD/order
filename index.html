@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>以物易物</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <meta name="description" content="發現你喜歡的" />
+  <meta name="author" content="東東" />
+  <base target="_self" />
+  <!-- 標題欄： -->
+  <link rel="icon" href="/img/Logo.png" type="image/x-icon" />
+  <!-- 收藏夾： -->
+  <link rel="shortcut icon" href="/img/Logo.png" type="image/x-icon" />
+  <!-- CSS only -->
+  <link rel="stylesheet" href="./css/style.css" />
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous" />
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css"
+    integrity="sha384-KyZXEAg3QhqLMpG8r+Knujsl5/6en8XCp+HHAAK5GSLf2xlYtvJ8U2Q4U+9cuEnJoa3" crossorigin="anonymous" />
+  <link rel="stylesheet" href="./css/style.css" />
+  <!-- AOS css -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <style>
+    /*  隐藏未编译的变量 */
+
+    [v-cloak] {
+      display: none;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font: 15px/1.3 'Open Sans', sans-serif;
+      color: #5e5b64;
+      text-align: center;
+    }
+
+    a,
+    a:visited {
+      outline: none;
+      color: #389dc1;
+    }
+
+    a:hover {
+      text-decoration: none;
+    }
+
+    section,
+    footer,
+    header,
+    aside,
+    nav {
+      display: block;
+    }
+
+    /*-------------------------
+        订单表单
+      --------------------------*/
+
+    form {
+      background-color: #61a1bc;
+      border-radius: 2px;
+      box-shadow: 0 1px 1px #ccc;
+      width: 400px;
+      padding: 35px 60px;
+      margin: 50px auto;
+    }
+
+    form h1 {
+      color: #fff;
+      font-size: 64px;
+      font-family: 'Cookie', cursive;
+      font-weight: normal;
+      line-height: 1;
+      text-shadow: 0 3px 0 rgba(0, 0, 0, 0.1);
+    }
+
+    form ul {
+      list-style: none;
+      color: #fff;
+      font-size: 20px;
+      font-weight: bold;
+      text-align: left;
+      margin: 20px 0 15px;
+    }
+
+    form ul li {
+      padding: 20px 30px;
+      background-color: #e35885;
+      margin-bottom: 8px;
+      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+      
+    }
+
+    form ul li span {
+      float: right;
+    }
+
+    form ul li.active {
+      background-color: #8ec16d;
+    }
+
+    div.total {
+      border-top: 1px solid rgba(255, 255, 255, 0.5);
+      padding: 15px 30px;
+      font-size: 20px;
+      font-weight: bold;
+      text-align: left;
+      color: #fff;
+    }
+
+    div.total span {
+      float: right;
+    }
+  </style>
+
+
+</head>
+
+<body>
+
+  <form id="main" v-cloak>
+    <!-- v-cloak 屬性將未編譯的變量隱藏起來，直到 Vue 實例準備就緒。 -->
+    <h1>Services</h1>
+    <div class="row ">
+      <ul class="d-flex justify-content-center">
+        <div class="col-10">
+          <!-- 透過 v-for 循環輸出 services 數組，並在點擊後使用 v-on:click 進行樣式切換，通過 v-bind:class 設置樣式 -->
+          <li class="" v-for="service in services" v-on:click="toggleActive(service)"
+           v-bind:class="{ 'active': service.active, 'text-danger': service.active}">
+            <!-- 顯示訂單明細 -->
+            {{service.name}} <span>{{service.price | currency}}</span>
+            <!-- service.price 通過管道符 | 傳遞給 currency 過濾器函數。 -->
+          </li>
+        </div>
+      </ul>
+    </div>
+    <div class="total">
+      <!-- 計算點選商品總價 -->
+      Total: <span>{{total() | currency}}</span>
+      <!-- 將 total() 函數的返回值轉換為貨幣格式並顯示在模板中。 -->
+    </div>
+  </form>
+
+  <script>
+    const app = Vue.createApp({
+      data() {
+        return {
+          services: [
+            {
+              name: '筆電',
+              price: 5000,
+              active: true
+            },
+            {
+              name: '吹風機',
+              price: 400,
+              active: false
+            },
+            {
+              name: '硬碟',
+              price: 500,
+              active: false
+            },
+            {
+              name: '液晶螢幕',
+              price: 3500,
+              active: false
+            },
+            {
+              name: '滑鼠',
+              price: 999,
+              active: false
+            }
+          ]
+        };
+      },
+      methods: {
+        toggleActive(s) {
+          s.active = !s.active;
+          // 切換狀態
+        },
+        total() {
+          let total = 0;
+          // 遍歷 services 數組，檢查每個服務對象的 active 屬性。
+          // 如果服務處於激活狀態（已選擇），則將其價格添加到總價中。
+          // 最後，返回計算出的總價。
+          this.services.forEach(function (s) {
+            if (s.active) {
+              total += s.price;
+            }
+          });
+          return total;
+        },
+        currency(value) {
+          return '$' + value.toFixed(2);
+        }
+      }
+    });
+    app.mount('#main');
+  </script>
+</body>
+
+<script src="./js/all.js"></script>
+<!-- Option 1: Bootstrap Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>
+<!-- AOS JS -->
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+</body>
+
+</html>
